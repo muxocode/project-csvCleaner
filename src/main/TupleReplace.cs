@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using entities;
 
-namespace entities
+namespace model
 {
-    public class TupleReplace
+    public class TupleReplace : ITupleReplace
     {
         public string column { get; set; }
         public string from { get; set; }

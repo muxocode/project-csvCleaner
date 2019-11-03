@@ -4,8 +4,8 @@ using System.Text;
 
 namespace entities
 {
-    public class ConfigSection
+    public interface IInputConfig : IConfigSection
     {
-        public char delimiter { get; set; }
+
     }
 }

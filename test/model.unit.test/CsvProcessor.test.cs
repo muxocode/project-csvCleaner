@@ -1,14 +1,14 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 using System.IO;
 using System.Linq;
+using Xunit;
 
 namespace model.test
 {
-    [TestClass]
+    
     public class CsvProcessorTests
     {
-        /*
-        [TestMethod]
+        [Fact]
         public void Process()
         {
             // Arrange
@@ -24,10 +24,9 @@ namespace model.test
                 delimiter);
 
             // Assert
-            Assert.IsTrue(result.Keys.Any());
-            Assert.IsTrue(result.Values.Any());
+            Assert.True(result.Keys.Any());
+            Assert.True(result.Values.Any());
 
         }
-        */
     }
 }

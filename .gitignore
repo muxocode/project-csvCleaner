@@ -15,3 +15,6 @@
 /test/domain.test/obj
 /test/main/bin/Debug/netcoreapp2.2
 /test/main/obj
+/csvCollector/obj
+/test/model.unit.test/bin/Debug/netcoreapp2.2
+/test/model.unit.test/obj

@@ -1,22 +1,14 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using csvCleaner;
-using System.IO;
-using domain;
+using Xunit;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
-namespace main.test
+namespace model.test
 {
-    internal class CsvData : Dictionary<string, IEnumerable<string>>, ICsvData
-    {
-
-    }
-
-    [TestClass]
+    
     public class HelperTests
     {
-        [TestMethod]
+        [Fact]
         public void ReadConfig()
         {
             // Arrange
@@ -27,10 +19,10 @@ namespace main.test
             var result = helper.ReadConfig(urlFile);
 
             // Assert
-            Assert.IsNotNull(result);
+            Assert.NotNull(result);
         }
 
-        [TestMethod]
+        [Fact]
         public void ReadCsv()
         {
             // Arrange
@@ -41,10 +33,10 @@ namespace main.test
             var result = helper.ReadCsv(urlFile);
 
             // Assert
-            Assert.IsNotNull(result);
+            Assert.NotNull(result);
         }
 
-        [TestMethod]
+        [Fact]
         public void WriteCsv()
         {
             // Arrange
@@ -63,9 +55,9 @@ namespace main.test
                 delimiter);
 
             // Assert
-            Assert.IsNotNull(result[0].Contains(","));
-            Assert.IsNotNull(result[0].Split(",").Count()==3);
-            Assert.IsNotNull(result.Count() == 9);
+            Assert.Contains(",",result[0]);
+            Assert.True(result[0].Split(",").Count() == 3);
+            Assert.True(result.Count() == 9);
 
         }
     }

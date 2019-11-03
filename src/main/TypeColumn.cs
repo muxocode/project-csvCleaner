@@ -1,16 +1,11 @@
-﻿using System;
+﻿using entities;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace entities
+namespace model
 {
-    public enum ETypeColumn
-    {
-        number,
-        text
-    }
-
-    public class TypeColumn
+    public class TypeColumn : ITypeColumn
     {
         public string column { get; set; }
         public ETypeColumn type { get; set; }

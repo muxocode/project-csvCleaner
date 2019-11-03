@@ -1,0 +1,40 @@
+﻿{
+  "input": {
+    "delimiter": ";",
+    "replaces": [
+      {
+        "from": ",",
+        "to": "."
+      },
+      {
+        "column": "name",
+        "from": "Á",
+        "to": "A"
+      }
+    ],
+    "conditions": [
+      {
+        "condition": "==",
+        "value": "2"
+      },
+      {
+        "column": "name",
+        "condition": "!=",
+        "value": ""
+      }
+    ],
+    "types": [
+      {
+        "column": "name",
+        "type": "text"
+      },
+      {
+        "column": "id",
+        "type": "number"
+      }
+    ]
+  },
+  "output": {
+    "delimiter": ","
+  }
+}

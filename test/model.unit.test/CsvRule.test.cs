@@ -1,13 +1,14 @@
 using entities;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 using System.Threading.Tasks;
+using Xunit;
 
 namespace model.test
 {
-    [TestClass]
+    
     public class CsvRuleTests
     {
-        [TestMethod]
+        [Fact]
         public async Task True()
         {
             // Arrange
@@ -18,9 +19,9 @@ namespace model.test
             var result = await csvRule.Check(obj);
 
             // Assert
-            Assert.IsTrue(result);
+            Assert.True(result);
         }
-        [TestMethod]
+        [Fact]
         public async Task False()
         {
             // Arrange
@@ -31,7 +32,7 @@ namespace model.test
             var result = await csvRule.Check(obj);
 
             // Assert
-            Assert.IsFalse(result);
+            Assert.False(result);
         }
     }
 }
