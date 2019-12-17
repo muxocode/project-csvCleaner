@@ -11,5 +11,7 @@ namespace entities
     public interface IConfigHelper
     {
         IConfiguration ConvertConfig(string[] data);
+        IConfiguration ConvertConfig(string data);
+
     }
 }

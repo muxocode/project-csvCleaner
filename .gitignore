@@ -18,3 +18,14 @@
 /csvCollector/obj
 /test/model.unit.test/bin/Debug/netcoreapp2.2
 /test/model.unit.test/obj
+/csvCollector/bin/Debug/netstandard2.0
+/csvCollector/bin/Release/netstandard2.0
+/src/csvCleaner/bin/Release/netcoreapp2.2
+/src/entities/bin/Release/netstandard2.0
+/src/main/bin/Release/netstandard2.0
+/test/domain.test/bin/Release/netcoreapp2.2/win10-x64/publish
+/test/domain.test/bin/Release/netcoreapp2.2/win10-x64
+/test/entities.test/bin/Debug/netcoreapp2.2
+/test/entities.test/obj
+/test/main/bin/Release/netcoreapp2.2/win10-x64
+/TestResults

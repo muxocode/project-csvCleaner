@@ -16,9 +16,9 @@ namespace model
 
         public Helper(IEnumerable<IRule<ICsvData>> dataRules, IEnumerable<IRule<ICsvLine>> lineRules, IEnumerable<Action<ICsvLine>> actions, IConfiguration config)
         {
-            DataRules = dataRules;
-            LineRules = lineRules;
-            Actions = actions;
+            DataRules = dataRules ?? new List<IRule<ICsvData>>();
+            LineRules = lineRules ?? new List<IRule<ICsvLine>>();
+            Actions = actions ?? new List<Action<ICsvLine>>();
             Config = config;
         }
 
@@ -28,8 +28,15 @@ namespace model
             return Newtonsoft.Json.JsonConvert.DeserializeObject<Configuration>(content);
         }
 
+        public IConfiguration ConvertConfig(string data)
+        {
+            return ConvertConfig(new string[] { data });
+        }
+
         public ICsvData ConvertData(string[] data)
         {
+            if (this.Config == null) throw new ArgumentException("Config can not be null");
+
             CsvData oDictionary = null;
             List<string> Keys = null;
 
@@ -51,7 +58,7 @@ namespace model
                     var i = 0;
                     foreach (var val in values)
                     {
-                        (oDictionary[Keys[i++]] as List<string>).Add(val);
+                            (oDictionary[Keys[i++]] as List<string>).Add(val);
                     }
                 }
 
@@ -66,7 +73,8 @@ namespace model
         {
             string[] lines = null;
             List<ErrorLine> errors = null;
-
+            if (this.Config == null) throw new ArgumentException("Config can not be null");
+            
             foreach (var item in DataRules)
             {
                 try
@@ -83,6 +91,8 @@ namespace model
             if(errors==null)
             {
                 long i = 0;
+                var resultLines = new List<ICsvLine>();
+
                 foreach (var line in data.GetLines())
                 {
                     foreach (var item in LineRules)
@@ -115,9 +125,10 @@ namespace model
                     }
 
                     i++;
+                    resultLines.Add(line);
                 }
 
-                lines = DataToString(data, errors, Config.output);
+                lines = DataToString(data.Keys, resultLines, errors, Config.output);
             }
 
 
@@ -128,31 +139,31 @@ namespace model
             };
         }
 
-        private static string[] DataToString(ICsvData data, IEnumerable<ErrorLine> errors, IOutputConfig config)
+        private static string[] DataToString(IEnumerable<string> keys,IEnumerable<ICsvLine> lines, IEnumerable<ErrorLine> errors, IOutputConfig config)
         {
+            errors = errors ?? new List<ErrorLine>();
             var delimiter = config.delimiter.ToString();
-            var oResult = new List<string>() { string.Join(delimiter, data.Keys) };
-            var n = 0;
+            var oResult = new List<string>() { string.Join(delimiter, keys) };
+
             var errorLines = errors
-                .Where(x=>x.Index!=null)
+                .Where(x => x.Index != null)
                 .Select(x => x.Index)
                 .Distinct()
                 .ToList();
-
-            for (var j = 0; j < data.Values.First().Count(); j++)
+            var i = 0;
+            foreach (var line in lines)
             {
-                var line = new string[data.Keys.Count - errors.Count()];
-                for (var i = 0; i < data.Keys.Count; i++)
+                var linetoAdd = new string[keys.Count()];
+                if (!errorLines.Contains(i++))
                 {
-                    if (!errorLines.Contains(i))
+                    var j = 0;
+                    foreach (var key in keys)
                     {
-                        var key = data.Keys.ToList()[i];
-                        line[n++] = data[key].ToList()[j];
+                        linetoAdd[j++] = line[key];
                     }
 
+                    oResult.Add(string.Join(delimiter, linetoAdd));
                 }
-
-                oResult.Add(string.Join(delimiter, line));
             }
 
             return oResult.ToArray();

@@ -1,5 +1,8 @@
 ﻿{
   "input": {
+    "delimiter": ";"
+  },
+  "output": {
     "delimiter": ";",
     "replaces": [
       {
@@ -7,34 +10,35 @@
         "to": "."
       },
       {
-        "column": "name",
+        "column": "col14",
         "from": "Á",
         "to": "A"
       }
     ],
     "conditions": [
       {
-        "condition": "==",
-        "value": "2"
-      },
-      {
-        "column": "name",
         "condition": "!=",
         "value": ""
+      },
+      {
+        "condition": "!=",
+        "value": " "
+      },
+      {
+        "column": "col13",
+        "condition": ">",
+        "value": "5"
       }
     ],
     "types": [
       {
-        "column": "name",
+        "column": "col14",
         "type": "text"
       },
       {
-        "column": "id",
+        "column": "col1",
         "type": "number"
       }
     ]
-  },
-  "output": {
-    "delimiter": ","
   }
 }

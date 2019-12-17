@@ -9,26 +9,26 @@ namespace model
 {
     public static class CsvLineRuleCreator
     {
-        public static IEnumerable<IRule<ICsvLine>> Create(IEnumerable<ICondition> conditions)
+        static Func<ICsvLine, string, List<string>> getValues = (line, column) =>
+        {
+            var aValues = new List<string>();
+
+            if (column != null)
+            {
+                aValues.Add(line[column]);
+            }
+            else
+            {
+                aValues = line.Values.ToList();
+            }
+
+            return aValues;
+        };
+
+        static List<CsvLineRule> Create(IEnumerable<ICondition> conditions)
         {
             var aResult = new List<CsvLineRule>();
             conditions = conditions ?? new List<Condition>();
-
-            Func<ICsvLine, string, List<string>> getValues = (line, column) =>
-            {
-                var aValues = new List<string>();
-
-                if (column != null)
-                {
-                    aValues.Add(line[column]);
-                }
-                else
-                {
-                    aValues = line.Values.ToList();
-                }
-
-                return aValues;
-            };
 
             conditions.Select(x => x.condition).ToList().ForEach(x =>
             {
@@ -48,9 +48,11 @@ namespace model
                     case ConditionalOperators.equal:
                         aResult.Add(new CsvLineRule(x =>
                         {
+                            var i = 0;
                             foreach (var val in getValues(x, item.column))
                             {
-                                var oEx = new ConditionException($"el registro {val} es difetente de {item.value}");
+                                i++;
+                                var oEx = new ConditionException($"Posición({i}): el registro '{val}' es difetente de '{item.value}'");
 
                                 if (float.TryParse(val, out var fVar) && float.TryParse(item.value, out var fItem))
                                 {
@@ -66,6 +68,8 @@ namespace model
                                         throw oEx;
                                     }
                                 }
+
+                                
                             }
 
                             return true;
@@ -75,18 +79,20 @@ namespace model
                     case ConditionalOperators.greater:
                         aResult.Add(new CsvLineRule(x =>
                         {
+                            var i = 0;
                             foreach (var val in getValues(x, item.column))
                             {
+                                i++;
                                 if (float.TryParse(val, out var fVar) && float.TryParse(item.value, out var fItem))
                                 {
                                     if (fVar <= fItem)
                                     {
-                                        throw new ConditionException($"el registro {val} es menor o igual que {item.value}");
+                                        throw new ConditionException($"Posición({i}): el registro '{val}' es menor o igual que {item.value}");
                                     }
                                 }
                                 else
                                 {
-                                    throw new ConditionException($"el registro {val} no tiene formato de número para la comparación de >");
+                                    throw new ConditionException($"Posición({i}): el registro '{val}' no tiene formato de número para la comparación de >");
                                 }
                             }
 
@@ -97,18 +103,20 @@ namespace model
                     case ConditionalOperators.greaterEqual:
                         aResult.Add(new CsvLineRule(x =>
                         {
+                            var i = 0;
                             foreach (var val in getValues(x, item.column))
                             {
+                                i++;
                                 if (float.TryParse(val, out var fVar) && float.TryParse(item.value, out var fItem))
                                 {
                                     if (fVar < fItem)
                                     {
-                                        throw new ConditionException($"el registro {val} es menor que {item.value}");
+                                        throw new ConditionException($"Posición({i}): el registro '{val}' es menor que {item.value}");
                                     }
                                 }
                                 else
                                 {
-                                    throw new ConditionException($"el registro {val} no tiene formato de número para la comparación de >=");
+                                    throw new ConditionException($"Posición({i}): el registro '{val}' no tiene formato de número para la comparación de >=");
                                 }
                             }
 
@@ -119,18 +127,20 @@ namespace model
                     case ConditionalOperators.minor:
                         aResult.Add(new CsvLineRule(x =>
                         {
+                            var i = 0;
                             foreach (var val in getValues(x, item.column))
                             {
+                                i++;
                                 if (float.TryParse(val, out var fVar) && float.TryParse(item.value, out var fItem))
                                 {
                                     if (fVar >= fItem)
                                     {
-                                        throw new ConditionException($"el registro {val} es mayor o igual que {item.value}");
+                                        throw new ConditionException($"Posición({i}): el registro '{val}' es mayor o igual que {item.value}");
                                     }
                                 }
                                 else
                                 {
-                                    throw new ConditionException($"el registro {val} no tiene formato de número para la comparación de <");
+                                    throw new ConditionException($"Posición({i}): el registro '{val}' no tiene formato de número para la comparación de <");
                                 }
                             }
 
@@ -142,18 +152,20 @@ namespace model
                     case ConditionalOperators.minorEqual:
                         aResult.Add(new CsvLineRule(x =>
                         {
+                            var i = 0;
                             foreach (var val in getValues(x, item.column))
                             {
+                                i++;
                                 if (float.TryParse(val, out var fVar) && float.TryParse(item.value, out var fItem))
                                 {
                                     if (fVar > fItem)
                                     {
-                                        throw new ConditionException($"el registro {val} es mayor que {item.value}");
+                                        throw new ConditionException($"Posición({i}): el registro '{val}' es mayor que '{item.value}'");
                                     }
                                 }
                                 else
                                 {
-                                    throw new ConditionException($"el registro {val} no tiene formato de número para la comparación de >");
+                                    throw new ConditionException($"Posición({i}): el registro '{val}' no tiene formato de número para la comparación de >");
                                 }
                             }
 
@@ -163,9 +175,10 @@ namespace model
                     case ConditionalOperators.notEqual:
                         aResult.Add(new CsvLineRule(x =>
                         {
+                            var i = 0;
                             foreach (var val in getValues(x, item.column))
                             {
-                                var oEx = new ConditionException($"el registro {val} es difetente de {item.value}");
+                                var oEx = new ConditionException($"Posición({i}): el registro '{val}' no es diferente de '{item.value}'");
 
                                 if (float.TryParse(val, out var fVar) && float.TryParse(item.value, out var fItem))
                                 {
@@ -192,6 +205,29 @@ namespace model
             return aResult;
         }
 
+        public static IEnumerable<IRule<ICsvLine>> Create(IOutputConfig outPutConfig)
+        {
+            var aResult = new List<CsvLineRule>();
 
+            aResult.Add(new CsvLineRule(x => {
+                var i = 0;
+                foreach (var val in getValues(x, null))
+                {
+                    i++;
+                    var oEx = new ConditionException($"Posición({i}): el registro '{val}' no puede contener el delimitador de destino {outPutConfig.delimiter}");
+
+                    if (val.Contains(outPutConfig.delimiter))
+                    {
+                        throw oEx;
+                    }
+                }
+
+                return true;
+            }));
+
+            aResult.AddRange(Create(outPutConfig.conditions));
+
+            return aResult;
+        }
     }
 }

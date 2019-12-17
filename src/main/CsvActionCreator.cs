@@ -18,9 +18,9 @@ namespace model
                 {
                     if (item.column == null)
                     {
-                        foreach(var val in x)
+                        foreach(var val in x.Keys.ToList())
                         {
-                            x[val.Key] = val.Value.Replace(item.from, item.to);
+                            x[val] = x[val].Replace(item.from, item.to);
                         }
                     }
                     else
@@ -36,13 +36,14 @@ namespace model
         public static IEnumerable<Action<ICsvLine>> Create(IEnumerable<ITypeColumn> types)
         {
             var result = new List<Action<ICsvLine>>();
+
             foreach (var item in types)
             {
 
                 result.Add(x =>
                 {
                     var value = false;
-
+                    
                     if (item.column == null)
                     {
                         foreach(var val in x)
@@ -56,6 +57,11 @@ namespace model
                                 default:
                                     value = true;
                                     break;
+                            }
+
+                            if (!value)
+                            {
+                                throw new FormatException($"Posición({val.Key}): No se cumple el formato indicado");
                             }
                         }
                     }
@@ -72,13 +78,15 @@ namespace model
                                 break;
                         }
 
+                        if (!value)
+                        {
+                            throw new FormatException("No se cumple el formato indicado");
+                        }
+
                     }
 
 
-                    if (!value)
-                    {
-                        throw new FormatException("No se cumple el formato indicado");
-                    }
+
                 });
             }
 

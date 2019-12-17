@@ -4,7 +4,7 @@ namespace model
 {
     public class ErrorLine : IErrorCsv
     {
-        string Error;
+        readonly string Error;
         public long? Index { get; }
 
 

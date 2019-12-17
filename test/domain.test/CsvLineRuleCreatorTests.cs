@@ -1,5 +1,6 @@
 using entities;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using model.CsvException;
 using Moq;
 using mxcd.core.rules;
 using System.Collections.Generic;
@@ -124,6 +125,13 @@ namespace model.test
     [TestClass]
     public class CsvLineRuleCreatorTests
     {
+        private MockRepository mockRepository;
+
+        [TestInitialize]
+        public void TestInitialize()
+        {
+            this.mockRepository = new MockRepository(MockBehavior.Strict);
+        }
 
         private IEnumerable<ICsvLine> CreateEmptyLines()
         {
@@ -138,12 +146,16 @@ namespace model.test
         {
             // Arrange
             IEnumerable<Condition> conditions = null;
+            var mock = mockRepository.Create<IOutputConfig>();
+            mock.Setup(x => x.conditions).Returns(conditions);
+            mock.Setup(x => x.delimiter).Returns(';');
+
 
             // Act
-            var rules = CsvLineRuleCreator.Create(conditions);
+            var rules = CsvLineRuleCreator.Create(mock.Object);
 
             // Assert
-            Assert.IsFalse(rules.Any());
+            Assert.IsTrue(rules.Count() == 1);
         }
 
         [TestMethod]
@@ -152,9 +164,13 @@ namespace model.test
             // Arrange
             var conditions = new List<Condition>();
             var lines = CreateEmptyLines();
+            var mock = mockRepository.Create<IOutputConfig>();
+            mock.Setup(x => x.conditions).Returns(conditions);
+            mock.Setup(x => x.delimiter).Returns(';');
+
 
             // Act
-            var rules = CsvLineRuleCreator.Create(conditions);
+            var rules = CsvLineRuleCreator.Create(mock.Object);
 
             // Assert
             await lines.CheckRules(rules);
@@ -164,15 +180,20 @@ namespace model.test
         public async Task check_string_equal()
         {
             // Arrange
-            var conditions = new List<Condition>();
-            conditions.AddEqual("S", "x");
+            IEnumerable<Condition> conditions = new List<Condition>();
+            conditions = conditions.AddEqual("string", "x");
 
 
             var lines = CreateEmptyLines();
-            lines.AddStringLine("x");
+            lines = lines.AddStringLine("x");
+
+            var mock = mockRepository.Create<IOutputConfig>();
+            mock.Setup(x => x.conditions).Returns(conditions);
+            mock.Setup(x => x.delimiter).Returns(';');
+
 
             // Act
-            var rules = CsvLineRuleCreator.Create(conditions);
+            var rules = CsvLineRuleCreator.Create(mock.Object);
 
             // Assert
             await lines.CheckRules(rules);
@@ -182,18 +203,51 @@ namespace model.test
         public async Task check_string_equal_error()
         {
             // Arrange
-            var conditions = new List<Condition>();
-            conditions.AddEqual("S", "x");
+            IEnumerable<Condition> conditions = new List<Condition>();
+            conditions = conditions.AddEqual("string", "x");
 
 
             var lines = CreateEmptyLines();
-            lines.AddStringLine();
+            lines = lines.AddStringLine();
+
+            var mock = mockRepository.Create<IOutputConfig>();
+            mock.Setup(x => x.conditions).Returns(conditions);
+            mock.Setup(x => x.delimiter).Returns(';');
+
 
             // Act
-            var rules = CsvLineRuleCreator.Create(conditions);
+            var rules = CsvLineRuleCreator.Create(mock.Object);
 
             // Assert
-            await lines.CheckRules(rules);
+            await Assert.ThrowsExceptionAsync<ConditionException>(async () =>
+            {
+                await lines.CheckRules(rules);
+            });
+        }
+
+        [TestMethod]
+        public async Task check_delimiter()
+        {
+            // Arrange
+            IEnumerable<Condition> conditions = null;
+
+
+            var lines = CreateEmptyLines();
+            lines = lines.AddStringLine("Miguel;");
+
+            var GoodLines = CreateEmptyLines().AddStringLine("T");
+
+            var mock = mockRepository.Create<IOutputConfig>();
+            mock.Setup(x => x.conditions).Returns(conditions);
+            mock.Setup(x => x.delimiter).Returns(';');
+
+
+            // Act
+            var rules = CsvLineRuleCreator.Create(mock.Object);
+
+            // Assert
+            await Assert.ThrowsExceptionAsync<ConditionException>(async () => { await lines.CheckRules(rules); });
+            await GoodLines.CheckRules(rules);
         }
     }
 }

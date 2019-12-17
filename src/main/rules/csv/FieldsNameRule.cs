@@ -8,7 +8,7 @@ namespace model.rules.csv
 
         public FieldsNameRule() : base(x =>
         {
-            if (x.Keys.Distinct().Count() > 1)
+            if (x.Keys.Distinct().Count() != x.Keys.Count)
             {
                 throw new CsvException.FileFormatException(Message);
             }

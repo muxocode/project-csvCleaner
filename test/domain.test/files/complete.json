@@ -1,6 +1,9 @@
 ﻿{
   "input": {
-    "delimiter": ";",
+    "delimiter": ";"
+  },
+  "output": {
+    "delimiter": ",",
     "replaces": [
       {
         "from": ",",
@@ -33,8 +36,5 @@
         "type": "number"
       }
     ]
-  },
-  "output": {
-    "delimiter": ","
   }
 }

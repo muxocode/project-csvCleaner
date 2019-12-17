@@ -19,7 +19,7 @@ namespace App
         internal static IServiceCollection AddConfiguration(this IServiceCollection services, IConfiguration config)
         {
             services.AddTransient(x => config);
-            foreach (var item in CsvLineRuleCreator.Create(config.output.conditions))
+            foreach (var item in CsvLineRuleCreator.Create(config.output))
             {
                 services.AddTransient(x => item);
             }
@@ -56,7 +56,7 @@ namespace App
         }
         public IConfigHelper CreateConfig()
         {
-            return new Helper(null, null);
+            return new Helper(null, null, null, null);
         }
 
         public IAppHelper CreateHelper(IConfiguration config)

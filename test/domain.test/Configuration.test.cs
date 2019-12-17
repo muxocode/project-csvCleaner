@@ -8,11 +8,11 @@ namespace model.test
     [TestClass]
     public class ConfigReaderTest
     {
-        /*
         public Configuration Read(string urlFile)
         {
             var content = System.IO.File.ReadAllText(urlFile);
             return Newtonsoft.Json.JsonConvert.DeserializeObject<Configuration>(content);
+
         }
 
         [TestMethod]
@@ -41,7 +41,7 @@ namespace model.test
             var url = $"{Directory.GetCurrentDirectory()}/files/complete.json";
             var json = Read(url);
 
-            Assert.IsTrue(json.input.replaces.Count() == 2);
+            Assert.IsTrue(json.output.replaces.Count() == 2);
         }
 
         [TestMethod]
@@ -50,7 +50,8 @@ namespace model.test
             var url = $"{Directory.GetCurrentDirectory()}/files/complete.json";
             var json = Read(url);
 
-            Assert.IsTrue(json.input.conditions.Count() == 2);
+            Assert.IsTrue(json.output.conditions.Count() == 2);
+
         }
 
         [TestMethod]
@@ -59,8 +60,7 @@ namespace model.test
             var url = $"{Directory.GetCurrentDirectory()}/files/complete.json";
             var json = Read(url);
 
-            Assert.IsTrue(json.input.types.Count() == 2);
+            Assert.IsTrue(json.output.types.Count() == 2);
         }
-        */
     }
 }
